@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="stylesheet" href="style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ToDo App</title>
+  </head>
+  <body>
+    <label class="switch">
+      <input type="checkbox" id="theme-toggler"/>
+      <span class="slider round"></span>
+    </label>
+    <div id="container">
+      <form id="form">
+        <input type="text" name="body" placeholder="Add new task..." autocomplete="off"/>
+      </form>
+
+      <div id="tasks-list"></div>
+    </div>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
