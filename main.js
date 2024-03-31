@@ -82,6 +82,9 @@ async function renderToDom(task){
     editBtn.textContent = "Save"
 
     const saveChanges = async () => {
+      if(inputField.value === ''){
+        return alert("!Please add some value")
+      }
       editBtn.textContent = "Edit"
       
       const updatedResponse = await db.updateDocument(

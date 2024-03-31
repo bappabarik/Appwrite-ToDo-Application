@@ -42,6 +42,7 @@ p{
 
 #form{
   padding: 1em 1em;
+  display: flex;
 }
 
 #form input[type="text"], .editable-input {
@@ -59,11 +60,6 @@ p{
   outline: none;
 }
 
-/* .editable-input {
-  outline: none;
-  width: 100%;
-  padding: 0.5em 1em;
-} */
 
 #container{
   max-width: 600px;
@@ -176,4 +172,15 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+button{
+  border: 2px solid var(--color-border);
+  padding: 16px 12px;
+  border-radius: 10px;
+  margin-left: 5px;
+  cursor: pointer;
+  font-size: large;
+  background-color: rgba(5, 143, 5, 0.845);
+  color: white;
 }
