@@ -122,15 +122,15 @@ async function renderToDom(task){
     });
   })
 
-  deleteBtn.addEventListener('click', () => {
-    db.deleteDocument(
-      DATABASE_ID,
-      COLLECTION_ID_TASKS,
-      task.$id
-    )
+  // deleteBtn.addEventListener('click', () => {
+  //   db.deleteDocument(
+  //     DATABASE_ID,
+  //     COLLECTION_ID_TASKS,
+  //     task.$id
+  //   )
 
-    wrapper.remove()
-  })
+  //   wrapper.remove()
+  // })
 
   wrapper.childNodes[1].addEventListener('click', async (e) => {
     console.log("running...");
