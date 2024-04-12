@@ -1,13 +1,13 @@
 import './style.css'
 import { Client, Databases, ID } from 'appwrite';
+import conf from './conf';
 
 const client = new Client();
-const DATABASE_ID = '65fab37f197029cc6565'
-const COLLECTION_ID_TASKS = '65fab3f2d2ad2c995845'
+
 
 client
-    .setEndpoint('https://cloud.appwrite.io/v1')
-    .setProject('65faafb9161633f8e46b');
+    .setEndpoint(conf.url)
+    .setProject(conf.projectId);
 
 const db = new Databases(client)
 
@@ -41,8 +41,8 @@ form.addEventListener('submit', addTask)
 
 async function getTasks(){
   const response = await db.listDocuments(
-    DATABASE_ID,
-    COLLECTION_ID_TASKS
+    conf.dbId,
+    conf.collectionId
     )
     // console.log(response);
     response.documents.forEach(element => {
@@ -88,8 +88,8 @@ async function renderToDom(task){
       editBtn.textContent = "Edit"
       
       const updatedResponse = await db.updateDocument(
-        DATABASE_ID,
-        COLLECTION_ID_TASKS,
+        conf.dbId,
+        conf.collectionId,
         task.$id,
         {'body': inputField.value}
       );
@@ -124,8 +124,8 @@ async function renderToDom(task){
 
   deleteBtn.addEventListener('click', () => {
     db.deleteDocument(
-      DATABASE_ID,
-      COLLECTION_ID_TASKS,
+      conf.dbId,
+      conf.collectionId,
       task.$id
     )
 
@@ -138,8 +138,8 @@ async function renderToDom(task){
     e.target.className = `complete-${task.completed}`
 
     await db.updateDocument(
-      DATABASE_ID,
-      COLLECTION_ID_TASKS,
+      conf.dbId,
+      conf.collectionId,
       task.$id,
       {'completed': task.completed}
     )
@@ -172,8 +172,8 @@ async function addTask(e){
   }
 
   const response = await db.createDocument(
-    DATABASE_ID,
-    COLLECTION_ID_TASKS,
+    conf.dbId,
+    conf.collectionId,
     ID.unique(),
     {'body': taskBody}
   )
