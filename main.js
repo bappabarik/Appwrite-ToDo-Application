@@ -44,7 +44,6 @@ async function getTasks(){
     conf.dbId,
     conf.collectionId
     )
-    // console.log(response);
     response.documents.forEach(element => {
       renderToDom(element)
     });
@@ -54,73 +53,52 @@ getTasks()
 
 async function renderToDom(task){
   const taskWrapper = `<div class='task-wrapper' id='task-${task.$id}'>
-                         <p class='complete-${task.completed}' id="task-body-${task.$id}">${task.body}</p> 
+                         <input
+                         value='${task.body}' 
+                         class='complete-${task.completed}' id="task-body-${task.$id}"
+                         readonly
+                         >
                          <div class="group-buttons">
-                         <span id="edit-${task.$id}">Edit</span>
+                         <button id="edit-${task.$id}">Edit</button>
                          <strong class='delete' id='delete-${task.$id}'>x</strong>
                          </div>
                       </div>`
 
   taskList.insertAdjacentHTML('afterbegin', taskWrapper)
 
-  console.log(taskWrapper);
   const deleteBtn = document.getElementById(`delete-${task.$id}`)
   const wrapper = document.getElementById(`task-${task.$id}`)
   
-  const editableText = document.getElementById(`task-body-${task.$id}`) 
+
   const editBtn = document.getElementById(`edit-${task.$id}`)
+  const editableTask = document.getElementById(`task-body-${task.$id}`)
 
-  editBtn.addEventListener('click', ()=>{
-    const inputField = document.createElement('input')
-    inputField.value = editableText.textContent
 
-    editableText.replaceWith(inputField)
-    inputField.focus()
-    inputField.classList.add("editable-input")
-    // console.log(inputField);
+  function handleEditButtonClick() {
 
-    editBtn.textContent = "Save"
-
-    const saveChanges = async () => {
-      if(inputField.value === ''){
-        return alert("!Please add some value")
+    
+    if (editBtn.textContent === 'Edit') {
+      editableTask.removeAttribute('readonly');
+      editBtn.textContent = 'Save';
+    } else {
+      if (editableTask.value === '') {
+        return alert('Please add some value!')
       }
-      editBtn.textContent = "Edit"
-      
-      const updatedResponse = await db.updateDocument(
+      db.updateDocument(
         conf.dbId,
         conf.collectionId,
         task.$id,
-        {'body': inputField.value}
-      );
+        {'body': editableTask.value}
+      )
+      editableTask.setAttribute('readonly', 'readonly');
+      editBtn.textContent = 'Edit';
+    }
+    
+  }
+ 
 
-      const newParagraph = document.createElement('p');
-      newParagraph.setAttribute("id", `task-body-${task.$id}`)
-      newParagraph.classList.add(`complete-${task.completed}`)
-      newParagraph.textContent = updatedResponse.body
-      
-      inputField.replaceWith(newParagraph);
-      console.log(newParagraph);
+  
 
-      editBtn.removeEventListener('click', saveChanges);
-
-      editBtn.addEventListener('click', editButtonClick);
-      location.reload()
-    };
-
-    const editButtonClick = () => {
-      saveChanges();
-    };
-
-    editBtn.addEventListener('click', editButtonClick)
-    inputField.addEventListener('blur', saveChanges);
-    inputField.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-        saveChanges();
-      }
-    });
-  })
 
   deleteBtn.addEventListener('click', () => {
     db.deleteDocument(
@@ -132,32 +110,35 @@ async function renderToDom(task){
     wrapper.remove()
   })
 
+  
   wrapper.childNodes[1].addEventListener('click', async (e) => {
-    console.log("running...");
-    task.completed = !task.completed
-    e.target.className = `complete-${task.completed}`
-
-    await db.updateDocument(
-      conf.dbId,
-      conf.collectionId,
-      task.$id,
-      {'completed': task.completed}
-    )
-  })
-
-  // wrapper.addEventListener('click', async (e) => {
-  //   if (e.target.classList.contains('task-wrapper')) {
-  //     task.completed = !task.completed;
-  //     editableText.classList.toggle(`complete-${task.completed}`);
+    if (editBtn.textContent === 'Edit') {
       
-  //     await db.updateDocument(
-  //       DATABASE_ID,
-  //       COLLECTION_ID_TASKS,
-  //       task.$id,
-  //       {'completed': task.completed}
-  //     );
-  //   }
-  // });
+      task.completed = !task.completed
+      e.target.className = `complete-${task.completed}`
+      console.log(task.completed);
+      if (task.completed === true) {
+        editBtn.disabled = true
+      } else{
+        editBtn.disabled = false
+      }
+
+      await db.updateDocument(
+        conf.dbId,
+        conf.collectionId,
+        task.$id,
+        {'completed': task.completed}
+      )
+  
+    }
+  })
+  if (task.completed === true) {
+    editBtn.disabled = true
+  } else{
+    editBtn.disabled = false
+  }
+    editBtn.addEventListener('click', handleEditButtonClick)
+
 }
 
 
